@@ -182,6 +182,10 @@
   const rows = document.querySelectorAll('.bet-row');
   const totalEl = document.getElementById('total');
   const resetBtn = document.getElementById('reset');
+	// Prevent scrolling on mobile when tapping the Reset button
+resetBtn.addEventListener('touchstart', e => {
+  e.preventDefault(); // stops mobile scrolling
+}, { passive: false });
 
   const chip1 = document.getElementById('chip1');
   const chip5 = document.getElementById('chip5');
@@ -223,6 +227,14 @@ rows.forEach(row => {
   const plus = row.querySelector('.plus');
   const minus = row.querySelector('.minus');
   const payout = Number(row.dataset.payout);
+  
+  // Prevent scrolling on mobile when tapping buttons
+[plus, minus].forEach(btn => {
+  btn.addEventListener('touchstart', e => {
+    e.preventDefault(); // stops mobile from scrolling
+  }, { passive: false });
+});
+
   
   // Increment button
 plus.addEventListener('click', () => {
