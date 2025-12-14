@@ -218,26 +218,43 @@ function adjustChipsByBet(payout, delta) {
   chip25.value = Math.max(0, sanitize(chip25) + delta * payout * 25);
 }
 
-  rows.forEach(row => {
-    const left = row.querySelector('.left');
-    const plus = row.querySelector('.plus');
-    const minus = row.querySelector('.minus');
+rows.forEach(row => {
+  const left = row.querySelector('.left');
+  const plus = row.querySelector('.plus');
+  const minus = row.querySelector('.minus');
+  const payout = Number(row.dataset.payout);
+  
+  // Increment button
+plus.addEventListener('click', () => {
+  left.value = sanitize(left) + 1; // increase the bet by 1
+  updateRow(row);                   // update the payout for this row
+  recalcChips();                    // update total chips
+  updateTotal();                    // update total money
+});
 
-const payout = Number(row.dataset.payout);
-
-plus.addEventListener('click', (e) => {
-  e.preventDefault();
-  left.value = sanitize(left) + 1;
-  adjustChipsByBet(payout, 1);
+// Decrement button
+minus.addEventListener('click', () => {
+  left.value = Math.max(0, sanitize(left) - 1); // decrease, but not below 0
+  updateRow(row);
+  recalcChips();
   updateTotal();
 });
 
-minus.addEventListener('click', (e) => {
-  e.preventDefault();  // prevent mobile scroll
-  if (sanitize(left) === 0) return;
-  left.value = sanitize(left) - 1;
-  adjustChipsByBet(payout, -1);
-  updateTotal();
+
+  // Clear zero on focus
+  left.addEventListener('focus', () => {
+    if (left.value === '0') {
+      left.value = '';
+    }
+  });
+
+  // Reset empty or invalid input to 0 on blur
+  left.addEventListener('blur', () => {
+    if (left.value === '' || Number(left.value) < 0 || isNaN(Number(left.value))) {
+      left.value = 0;
+    }
+    updateRow(row);
+    recalcChips();
 });
 
 
@@ -286,3 +303,4 @@ left.addEventListener('input', () => {
 </script>
 </body>
 </html>
+
